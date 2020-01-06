@@ -1,70 +1,87 @@
 <template>
   <div id="app">
-    <iframe :src="url" frameborder="0"></iframe>
+    <div class="index">
+      <story></story>
+    </div>
   </div>
 </template>
 
 <script>
-const axios = require('axios')
+import './assets/styles/common.styl'
+import story from './components/content'
+var wx = require('weixin-js-sdk')
 export default {
   name: 'app',
   data() {
     return {
       loginApi: '/api/api/login?channel_id=2&type=account',
       api: '/api/api/invoke?server=CarIns.getLoginUrl&device=mobile',
-      url: ''
+      url: '',
+      loadModal: false
     }
   },
   mounted() {
-    let self = this
-    this.doLogin((data) => {
-      let code = data.code
-      if (code === 1) {
-        // 登录成功，请求获取URL的API
-        axios.get(self.api).then(function(res) {
-          console.log('==> 第三方数据：', res)
-          // handle success
-          self.url = res.data.data
-        }).catch(function(error) {
-          // handle error
-          console.log(error)
-        })
-      } else {
-        alert('未获取到登录状态')
-      }
-    })
+    console.log(window.location)
+    window.addEventListener('scroll', this.handleScroll)
+    let method = window.addEventListener ? "addEventListener" : "attachEvent"
+    window[method](
+      (method === "addEventListener" ? "" : "on") + "resize",
+      this.onResize.bind(window),
+      false
+    )
+    this.onResize()
+    // window.onunload = function() {
+    //   wx.miniProgram.navigateBack({
+    //     success: function() {
+    //       console.log('webview callback success.')
+    //     }
+    //   })
+    // }
+    window.history.pushState('forward', null, '#');
+    window.history.forward(1);
+    // 不知为何必须要加以上两行代码才能成功监听到回退事件..先打个问号??? 后续更新
+    window.addEventListener("popstate", function() {
+        // 跳转到上一个小程序页面
+        wx.miniProgram.navigateBack({
+            delta: 1
+        });
+    }, false);
   },
   methods: {
-    doLogin(callback) {
-      axios.post(this.loginApi, {
-        data: {
-          keyword: '15768397348',
-          password: 'Zjj871026'
-        }
-      }).then(function(res) {
-        console.log(typeof callback)
-        if (typeof callback === 'function') {
-          callback(res.data)
-        } else {
-          console.error('Function type error.')
-        }
-      }).catch(function() {
-        alert('登录失败！')
-      })
+    onResize() {
+      // 设置字体
+      let docEl = document.documentElement;
+      let width = docEl.clientWidth >= 750 ? 750 : docEl.clientWidth;
+      let fontSize = width / 10;
+      let defaultUIWidth = 750;
+      let fontScale = width / defaultUIWidth;
+      document.querySelector("html").style.fontSize = fontSize + "px";
+      document.querySelector("body").style.fontSize = 20 * fontScale + "px";
     }
   },
   components: {
+    story
   }
 }
 </script>
 
 <style>
+body {
+  background: rgba(0, 0, 0, 0)
+}
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  position: relative;
+  text-align: justify;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-height: 100%;
+  height: auto;
 }
 </style>

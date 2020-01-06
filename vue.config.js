@@ -4,7 +4,7 @@ const path = require("path")
  * @devApiUrl 服务器地址
  * @devApiPort 服务器端口
  */
-const devApiUrl = "ts-www.luckyins.com"
+const devApiUrl = "www.kehanjia.com"
 /**
  * VUE-CONFIG
  * 包括vue项目本身配置，以及webpack基本及扩展配置
@@ -23,6 +23,18 @@ module.exports = {
   },
   css: {
     loaderOptions: {
+      /**
+       * 配置vue组件内style标签样式的px->rem
+       */
+      postcss: {
+        plugins: [
+          require('postcss-pxtorem')({ // 把px单位换算成rem单位
+            rootValue: 75, // 换算的基数(设计图750的根字体为75)
+            // selectorBlackList: ['md'], // 忽略转换正则匹配项
+            propList: ['*']
+          })
+        ]
+      }
     }
   },
   configureWebpack: {
@@ -38,6 +50,17 @@ module.exports = {
               formatter: require("eslint-friendly-formatter")
             }
           }
+        },
+        {
+          test: /\.styl(us)?$/,
+          use: [
+            {
+              loader: "stylus-loader",
+              options: {
+                data: ""
+              }
+            }
+          ]
         }
       ]
     },
@@ -57,7 +80,7 @@ module.exports = {
     port: 8080,
     // host: '127.0.0.1',
     proxy: {
-      "/api": {
+      "/mapp": {
         target: "https://" + devApiUrl + "",
         changeOrigin: true,
         secure: false,
