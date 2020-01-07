@@ -33,7 +33,7 @@ function _factory(ApiMap) {
 // common api
 _factory(Api)
 
-// 获取用户登录状态
+// 用户分数
 export const fetchUserStore = ({ commit }, data) => {
   commit('USER_SCORE', data)
 }

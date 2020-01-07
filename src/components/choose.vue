@@ -58,6 +58,7 @@ import correctSound from '../assets/audio/correct.mp3'
 import incorrectSound from '../assets/audio/incorrect.mp3'
 import {Howl, Howler} from 'howler'
 import { mapState } from 'vuex'
+var wx = require('weixin-js-sdk')
 export default {
   data() {
     return {
@@ -142,11 +143,23 @@ export default {
           res = res.data
           this.score = res.score
           this.$store.dispatch('fetchUserStore', this.score)
+          // 向小程序传值
+          wx.miniProgram.postMessage({
+            score: res.score
+          })
         }).catch(err => {
-          console.log(err)
+          wx.showToast({
+            title: err.msg,
+            icon: 'none',
+            duration: 2000
+          })
         })
-      }).catch(err => {
-        console.log(err)
+      }).catch(() => {
+        wx.showToast({
+          title: '服务器错误',
+          icon: 'none',
+          duration: 2000
+        })
       })
       // 正确提示音
       this.correctSound.play()
