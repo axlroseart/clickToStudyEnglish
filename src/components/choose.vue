@@ -143,10 +143,6 @@ export default {
           res = res.data
           this.score = res.score
           this.$store.dispatch('fetchUserStore', this.score)
-          // 向小程序传值
-          wx.miniProgram.postMessage({
-            score: res.score
-          })
         }).catch(err => {
           wx.showToast({
             title: err.msg,
@@ -179,6 +175,15 @@ export default {
       this.isPlaying = false
     }
   },
+  // beforeDestroy() {
+  //   console.log('==> webview beforeDestroy.')
+  //   // 向小程序传值
+  //   wx.miniProgram.postMessage({
+  //     score: this.score
+  //   })
+  //   // 向小程序回传分数
+  //   wx.miniProgram.navigateBack({delta: 1})
+  // },
   computed: {
     ...mapState({
       token: state => state.common.token

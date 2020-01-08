@@ -10,6 +10,7 @@
 import './assets/styles/common.styl'
 import story from './components/content'
 var wx = require('weixin-js-sdk')
+import { mapState } from 'vuex'
 export default {
   name: 'app',
   data() {
@@ -37,15 +38,21 @@ export default {
     //     }
     //   })
     // }
-    window.history.pushState('forward', null, '#');
+    window.history.pushState('forward', null, '#')
     window.history.forward(1);
+    let self = this
     // 不知为何必须要加以上两行代码才能成功监听到回退事件..先打个问号??? 后续更新
     window.addEventListener("popstate", function() {
+        // 向小程序传值
+        wx.miniProgram.postMessage({
+          score: self.score
+        })
         // 跳转到上一个小程序页面
         wx.miniProgram.navigateBack({
             delta: 1
-        });
-    }, false);
+        })
+        wx.miniProgram.navigateTo( 'pages/index/main?score=' + self.score + '')
+    }, false)
   },
   methods: {
     onResize() {
@@ -58,6 +65,11 @@ export default {
       document.querySelector("html").style.fontSize = fontSize + "px";
       document.querySelector("body").style.fontSize = 20 * fontScale + "px";
     }
+  },
+  computed: {
+    ...mapState({
+      score: state => state.common.score
+    })
   },
   components: {
     story

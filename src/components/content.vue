@@ -88,7 +88,9 @@ export default {
     this.id = this.GetRequest(window.location.href).id
     this.token = this.GetRequest(window.location.href).token
     let score = this.GetRequest(window.location.href).score
-    score.split('#').length > 1 ? score = score.split('#')[0] : !0
+    if (score) {
+      score.split('#').length > 1 ? score = score.split('#')[0] : !0
+    }
     this.$store.dispatch('setToken', this.token)
     this.$store.dispatch('fetchUserStore', score)
     console.log('==> id:', this.id)
