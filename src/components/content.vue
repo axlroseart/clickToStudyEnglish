@@ -86,6 +86,7 @@ export default {
     //   title: '加载中...'
     // })
     this.id = this.GetRequest(window.location.href).id
+    this.index = this.GetRequest(window.location.href).index
     this.token = this.GetRequest(window.location.href).token
     let score = this.GetRequest(window.location.href).score
     if (score) {
@@ -94,6 +95,7 @@ export default {
     this.$store.dispatch('setToken', this.token)
     this.$store.dispatch('fetchUserStore', score)
     console.log('==> id:', this.id)
+    console.log('==> index:', this.index)
     console.log('==> token:', this.token)
     this.Api.fetchChapterData({
       data: this.id,
@@ -102,7 +104,7 @@ export default {
       this.isLoaded = true
       console.log('==> 拿到数据')
       this._checkData(data).then(data => {
-        data = data.data[0]
+        data = data.data[this.index]
         this.highlight = data.highlight
         this.resource = data.resource
         document.getElementsByTagName("title")[0].innerText = `故事寻宝 - ${data.resource.title}`
@@ -192,6 +194,7 @@ export default {
         data.forEach(item => {
           let text = item.text
           text = text.substr(0, 1).toLowerCase() + text.substr(1)
+          console.log('==> 调整后text:', text)
           let reg = new RegExp(text, 'g')
           // console.log('reg', reg)
           let hilitHtml = '<span class="text-center text-shadow text-blue highlight" data-key="ohmygod">' + text + '</span>'
