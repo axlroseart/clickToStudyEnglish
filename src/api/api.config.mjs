@@ -15,6 +15,13 @@ const apiConfig = {
     params: {
     }
   },
+  // fetchChapterData: {
+  //   url: '/data.json',
+  //   method: 'GET',
+  //   type: 'url',
+  //   params: {
+  //   }
+  // },
   // 登录
   userLogin: {
     url: '/mapp/login',

@@ -105,6 +105,7 @@ export default {
       console.log('==> 拿到数据')
       this._checkData(data).then(data => {
         data = data.data[this.index]
+        // data = data.data[0]
         this.highlight = data.highlight
         this.resource = data.resource
         document.getElementsByTagName("title")[0].innerText = `故事寻宝 - ${data.resource.title}`
@@ -112,7 +113,6 @@ export default {
         this.getFullContent(content).then((res) => {
           document.querySelector('.content-index').style.height = 'auto'
           this.content = res
-          // console.log(this.content)
           this.replaceHilit(this.highlight)
         })
       })
@@ -146,7 +146,8 @@ export default {
       return new Promise((resolve) => {
         let content = ''
         texts.forEach(item => {
-          content += JSON.stringify(item.content) + '<br />'
+          // content += JSON.stringify(item.content) + '<br />'
+          content += item.content + '<br />'
         })
         resolve(content)
       })
@@ -181,7 +182,7 @@ export default {
       }
       let data = null
       this.highlight.forEach(item => {
-        item.text = item.text.substr(0, 1).toLowerCase() + item.text.substr(1)
+        item.text = (item.text).replace('!', '')
         if (item.text === key) {
           data = item
         }
@@ -192,16 +193,11 @@ export default {
     replaceHilit(data) {
       return new Promise(resolve => {
         data.forEach(item => {
-          let text = item.text
-          text = text.substr(0, 1).toLowerCase() + text.substr(1)
-          console.log('==> 调整后text:', text)
-          let reg = new RegExp(text, 'g')
-          // console.log('reg', reg)
-          let hilitHtml = '<span class="text-center text-shadow text-blue highlight" data-key="ohmygod">' + text + '</span>'
+          let text = (item.text).replace('!', '')
+          // console.log('==> 调整后text:', text)
+          let reg = new RegExp("\\b" + text + "\\b", 'ig')
+          let hilitHtml = ' <span class="thgilhgih" data-key="ohmygod">' + text + '</span>'
           this.content = this.content.replace(reg, hilitHtml)
-          // this.loadModal = false
-          // wx.hideLoading()
-          // console.log('hilitHtml', hilitHtml)
         })
         resolve()
       })
